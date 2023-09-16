@@ -18,9 +18,12 @@ var QAList ={
 }
 let correctAnswer;
 let userAnswer;
+let qcount=0;
+let timeLeft=0;
 
 var introPage = document.querySelector("#intro");
 var questionPage = document.querySelector("#quiz");
+var endQuiz = document.querySelector("#end-quiz");
 var scorePage = document.querySelector("#score-record");
 
 var startGameButton = document.getElementById("start-quiz");
@@ -30,13 +33,19 @@ var viewHighscores = document.getElementById("scoreboard");
 var questionH2 = document.getElementById("question")
 var answerUl = document.getElementById("answers")
 var result = document.getElementById("result")
-// var answerOptions = answerUl.querySelectorAll("li")
+
+
+var playerInit = document.getElementById("player-initials")
+var submitButton = document.getElementById("submit")
+
+var pastHighScores = [];
 
 //init
 function init(){
 questionPage.style.display = "none";
 scorePage.style.display = "none";
 result.style.display = "none";
+endQuiz.style.display = "none";
 startGameButton.addEventListener("click",startGame);
 
 }
@@ -45,25 +54,32 @@ function startGame(){
  //todo
  introPage.style.display = "none";
  questionPage.style.display = "block";
- scorePage.style.display = "none";
  
- updateQuestion(Object.keys(QAList)[0]);
- updateAnswers(Object.values(QAList)[0]);
- correctAnswer = Object.values(QAList)[0][4];
- userAnswer = answerUl.addEventListener("click",answerHandler);
- 
+//  updateQuestion(Object.keys(QAList)[0]);
+//  updateAnswers(Object.values(QAList)[0]);
+//  correctAnswer = Object.values(QAList)[0][4];
+//  userAnswer = answerUl.addEventListener("click",answerHandler);
+renderQsAndAs(QAList,qcount);
+
 
 }
-function renderQsAndAs(QAList){
- for (let i = 0; i<Object.keys(QAList).length;i++){
-    updateQuestion(Object.keys(QAList)[i]);
-    updateAnswers(Object.values(QAList)[i]);
-    correctAnswer = Object.values(QAList)[i][4];
-    userAnswer = answerUl.addEventListener("click",answerHandler);
-    if (timer()==0){
-        break;
+
+function renderQsAndAs(QAList,qcount){
+    if (qcount < Object.keys(QAList).length){
+        //console.log(`${Object.keys(QAList)[qcount]}: ${Object.values(QAList)[qcount]}`);
+        //console.log(typeof Object.keys(QAList).length);
+        updateQuestion(Object.keys(QAList)[qcount]);
+        updateAnswers(Object.values(QAList)[qcount]);
+        correctAnswer = Object.values(QAList)[qcount][4];
+        userAnswer = answerUl.addEventListener("click",answerHandler);
+    }
+    else{
+        endQuizResult();
         }
-    }   
+    // if (timer()==0){
+        
+    // }
+
 }
 
 
@@ -74,10 +90,12 @@ function updateQuestion(question){
 }
 
 function updateAnswers(answers){
+    answerUl.innerHTML='';
     for(let i = 0; i<(answers.length-1);i++){
         var answerOption = document.createElement("li");
         answerOption.textContent=`${i+1}. ${answers[i]}`;
         answerOption.dataset.number=i;
+        answerOption.setAttribute('class', 'clickable');
         answerUl.appendChild(answerOption);
     }
 }
@@ -85,8 +103,10 @@ function updateAnswers(answers){
 
 function timer (){
  //todo
- let timeLeft=70;
- return timeLeft
+ timeLeft=70;
+
+ return timeLeft;
+
 }
 
 
@@ -95,6 +115,8 @@ function answerHandler(event){
     if (element.matches("li")) {
         userAnswer = element.dataset.number;
         checkResult(userAnswer,correctAnswer);
+        qcount++;
+        renderQsAndAs(QAList,qcount);
     }
     else{
         return;
@@ -117,6 +139,34 @@ function checkResult(userAnswer,correctAnswer){
         result.textContent = "Wrong!";
         result.style.display = "block";}
     
+}
+
+function endQuizResult(){
+    questionPage.style.display = "none";
+    scorePage.style.display = "none";    
+    endQuiz.style.display = "block";
+    timeLeft=70;
+    submitButton.addEventListener("click", function(event) {
+        event.preventDefault();
+        
+        var player = {
+            initial: playerInit.value,
+            score: timeLeft,
+          };
+        pastHighScores.push(player); 
+        
+        localStorage.setItem("pastHighScores", JSON.stringify(pastHighScores));
+        displayPastHighscore()     
+        });
+}
+
+function displayPastHighscore(){
+    questionPage.style.display = "none";
+    scorePage.style.display = "block";    
+    endQuiz.style.display = "none";
+    pastHighScores = JSON.parse(localStorage.getItem("pastHighScores") ?? []);
+
+
 }
 
 

@@ -24,7 +24,7 @@ header{
 }
 
 
-main button{
+main button,input[type=submit] {
     background-color: blueviolet;
     color: white;
     border-style: none;
@@ -32,10 +32,6 @@ main button{
     padding: 10px;
     border-radius: 10px;
 }
-
-
-
-
 
 #intro{
     display:flex;
@@ -65,12 +61,12 @@ main button{
 }
 
 
-#quiz{
+#quiz, #end-quiz{
     display: flex;
     flex-direction: column;
     margin:10% 20%;
 }
-#quiz h2{
+#quiz h2, #end-quiz h2{
     display: inline-flex;
     overflow-wrap: break-word;
     font-size: 2em;
@@ -99,8 +95,14 @@ ul > li {
     font-size: 1.5em;
     font-style: italic;
 }
-
-
+#end-quiz p{
+    font-size: 1.5em;
+    margin: 10px;
+}
+#end-quiz form{
+    font-size: 1.25em;
+    margin: 10px;
+}
 
 #score-record{
     display: block;
