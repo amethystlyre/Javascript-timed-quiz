@@ -23,14 +23,28 @@ header{
     margin: 5px;
 }
 
-main{
+
+main button{
+    background-color: blueviolet;
+    color: white;
+    border-style: none;
+    margin: 5px;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+
+
+
+
+#intro{
     display:flex;
     flex-direction: column;
     align-items: center;
     margin:10% 20%;
 }
 
-main h1{
+#intro h1{
     color: black;
     font-size: 3em;
     align-self: center;
@@ -38,26 +52,23 @@ main h1{
     padding: 5px;
 }
 
-main p{
+
+#intro p{
     color: black;
     font-size: 1.5em;
     margin:10px auto;
     text-align: center;
 }
-main button{
+
+#intro button{
     align-self: center;
-    margin: 5px;
-    padding: 10px;
-    background-color: blueviolet;
-    color: white;
-    border-style: none;
-    border-radius: 10px;
 }
 
 
 #quiz{
     display: flex;
     flex-direction: column;
+    margin:10% 20%;
 }
 #quiz h2{
     display: inline-flex;
@@ -81,18 +92,29 @@ ul > li {
     background-color: blueviolet;
     color: white;
     border-radius: 10px;
+    width: max-content;
 }
+
+#quiz p{
+    font-size: 1.5em;
+    font-style: italic;
+}
+
+
 
 #score-record{
     display: block;
     align-self: baseline;
-    width: 80%;
+    width: 50%;
+    margin:10% 20%;
 }
 
 #score-record h1{
     display: block;
     overflow-wrap: break-word;
     text-align: left;
+    color: black;
+    font-size: 3em;
 }
 
 ol{
@@ -105,4 +127,8 @@ ol > li {
     margin: 5px;
     background-color: rgb(224, 183, 233);
     color: black;    
+}
+
+.clickable:hover {
+    background-color: rgb(175, 89, 228);
 }
