@@ -203,20 +203,28 @@ function endQuizResult() {
 
     submitButton.addEventListener("click", function (event) {
         event.preventDefault();
-
-            if (playerInit.value != null || playerInit.value != "") {
-                var currentScore = {
-                    initials: playerInit.value,
-                    score: timeLeft
-                }
-                pastHighScores.push(currentScore);
+        var currentScore = {
+            initials: playerInit.value,
+            score: timeLeft
             }
-            localStorage.setItem("pastHighScores", JSON.stringify(pastHighScores));
+        pastHighScores.push(currentScore);
+        localStorage.setItem("pastHighScores", JSON.stringify(pastHighScores));
+
+            // if (playerInit.value != null || playerInit.value != "") {
+            //     var currentScore = {
+            //         initials: playerInit.value,
+            //         score: timeLeft
+            //     }
+            //     pastHighScores.push(currentScore);
+            //     localStorage.setItem("pastHighScores", JSON.stringify(pastHighScores));
+            // }
+            //localStorage.setItem("pastHighScores", JSON.stringify(pastHighScores));
 
        displayPastHighscore()
     });
 }
 
+//function to display high scores from past games sorted in descending order
 function displayPastHighscore() {
     introPage.style.display = "none";
     questionPage.style.display = "none";
@@ -226,12 +234,7 @@ function displayPastHighscore() {
     pastHighScores = JSON.parse(localStorage.getItem("pastHighScores") ?? []);
     
     pastHighScores.sort((a, b) => {return b.score - a.score});
-    //console.log(pastHighScores);
-    // for (let scores in pastHighScores){
-    //     pastScore = document.createElement("li");
-    //     pastScore.textContent=`${scores} - ${pastHighScores[scores]}`;
-    //     scoresList.appendChild(pastScore);
-    // }
+
     for (let i = 0; i < pastHighScores.length; i++) {
         var pastScore = document.createElement("li");
         pastScore.textContent = `${pastHighScores[i].initials} - ${pastHighScores[i].score}`
@@ -240,6 +243,7 @@ function displayPastHighscore() {
 
 }
 
+//function to clear highscore data
 function clearPastHighscore() {
     pastHighScores = [];
     localStorage.setItem("pastHighScores", JSON.stringify(pastHighScores));
@@ -247,6 +251,7 @@ function clearPastHighscore() {
     displayPastHighscore()
 }
 
+//function to display time left when positive
 function displayTimeLeft(timeLeft) {
     if (timeLeft > 0) { timerDisplay.textContent = timeLeft; }
     else {
