@@ -24,7 +24,7 @@ let userAnswer;
 let qcount;
 let timeLeft;
 let timeInterval;
-var listenerAdded=false;
+var listenerAdded = false;
 var pastHighScores = [];
 
 //Find HTML elements and assign to variables
@@ -206,16 +206,16 @@ function endQuizResult() {
             //Credits to Borislav Hadzhiev from https://bobbyhadz.com/blog/check-if-localstorage-key-exists-using-javascript
             if (localStorage.hasOwnProperty('pastHighScores')) {
                 pastHighScores = JSON.parse(localStorage.getItem("pastHighScores"));
-              }
-
-            if (playerInit.value != null || playerInit.value != "") {
-            var currentScore = {
-                initials: playerInit.value,
-                score: displayTimeLeft(timeLeft)
             }
-            pastHighScores.push(currentScore);
-            localStorage.setItem("pastHighScores", JSON.stringify(pastHighScores));
-        }
+
+            if (playerInit.value != null && playerInit.value != "") {
+                var currentScore = {
+                    initials: playerInit.value,
+                    score: displayTimeLeft(timeLeft)
+                }
+                pastHighScores.push(currentScore);
+                localStorage.setItem("pastHighScores", JSON.stringify(pastHighScores));
+            }
 
             displayPastHighscore()
         });
