@@ -18,12 +18,13 @@ let QAList = {
     "Arrays in JavaScript can be used to store ______.":
         ["Numbers and strings", "Other arrays", "Booleans", "All of the above", 3]
 }
-//initialize global variables and counters for later use.
+//initialize global variables, default values and counters for later use.
 let correctAnswer;
 let userAnswer;
 let qcount;
 let timeLeft;
 let timeInterval;
+var listenerAdded=false;
 var pastHighScores = [];
 
 //Find HTML elements and assign to variables
@@ -66,6 +67,7 @@ function init() {
     scorePage.style.display = "none";
     result.style.display = "none";
     endQuiz.style.display = "none";
+
     //Listen when the user wants to start game
     startGameButton.addEventListener("click", startGame);
 
@@ -81,6 +83,7 @@ function startGame() {
     //gameScore=0;
     startTimer(timeLeft);
     renderQsAndAs(QAList, qcount);
+    viewHighscores.removeEventListener("click", displayPastHighscore);
 }
 
 //Render questions and multiple choice answers on screen
@@ -106,8 +109,6 @@ function renderQsAndAs(QAList, qcount) {
 
 }
 
-
-
 //Change the question once user has answered
 function updateQuestion(question) {
     questionH2.textContent = question;
@@ -125,19 +126,19 @@ function updateAnswers(answers) {
     }
 }
 
-
+//function for timer count down method
 function startTimer(timeGiven) {
 
     timeLeft = timeGiven;
-    timerDisplay.textContent = timeLeft;
+    timerDisplay.textContent = displayTimeLeft(timeLeft);
 
     timeInterval = setInterval(function () {
 
-        timerDisplay.textContent = timeLeft;
+        timerDisplay.textContent = displayTimeLeft(timeLeft);
 
         if (timeLeft > 0) {
             timeLeft--;
-            timerDisplay.textContent = timeLeft;
+            timerDisplay.textContent = displayTimeLeft(timeLeft);
 
         }
         else {
@@ -188,40 +189,38 @@ function checkResult(userAnswer, correctAnswer) {
 
 }
 
-
-
+//Page to save score after end of quiz
 function endQuizResult() {
     questionPage.style.display = "none";
     scorePage.style.display = "none";
     endQuiz.style.display = "block";
+    viewHighscores.addEventListener("click", displayPastHighscore);
 
-    if (timeLeft > 0) {
-        playerScore.textContent = timeLeft;
-    } else {
-        playerScore.textContent = 0;
-    }
+    playerScore.textContent = displayTimeLeft(timeLeft);
 
-    submitButton.addEventListener("click", function (event) {
-        event.preventDefault();
-        var currentScore = {
-            initials: playerInit.value,
-            score: timeLeft
+    //check for listener added to avoid duplication - code from AskBCS Learning Assistant
+    if (!listenerAdded) {
+        submitButton.addEventListener("click", function (event) {
+            event.preventDefault();
+            //check for past highscores saved in local storage
+            //Credits to Borislav Hadzhiev from https://bobbyhadz.com/blog/check-if-localstorage-key-exists-using-javascript
+            if (localStorage.hasOwnProperty('pastHighScores')) {
+                pastHighScores = JSON.parse(localStorage.getItem("pastHighScores"));
+              }
+
+            if (playerInit.value != null || playerInit.value != "") {
+            var currentScore = {
+                initials: playerInit.value,
+                score: displayTimeLeft(timeLeft)
             }
-        pastHighScores.push(currentScore);
-        localStorage.setItem("pastHighScores", JSON.stringify(pastHighScores));
+            pastHighScores.push(currentScore);
+            localStorage.setItem("pastHighScores", JSON.stringify(pastHighScores));
+        }
 
-            // if (playerInit.value != null || playerInit.value != "") {
-            //     var currentScore = {
-            //         initials: playerInit.value,
-            //         score: timeLeft
-            //     }
-            //     pastHighScores.push(currentScore);
-            //     localStorage.setItem("pastHighScores", JSON.stringify(pastHighScores));
-            // }
-            //localStorage.setItem("pastHighScores", JSON.stringify(pastHighScores));
-
-       displayPastHighscore()
-    });
+            displayPastHighscore()
+        });
+        listenerAdded = true;
+    }
 }
 
 //function to display high scores from past games sorted in descending order
@@ -232,8 +231,9 @@ function displayPastHighscore() {
     endQuiz.style.display = "none";
     scoresList.innerHTML = '';
     pastHighScores = JSON.parse(localStorage.getItem("pastHighScores") ?? []);
-    
-    pastHighScores.sort((a, b) => {return b.score - a.score});
+
+    //display score in descending order
+    pastHighScores.sort((a, b) => { return b.score - a.score });
 
     for (let i = 0; i < pastHighScores.length; i++) {
         var pastScore = document.createElement("li");
@@ -251,12 +251,17 @@ function clearPastHighscore() {
     displayPastHighscore()
 }
 
-//function to display time left when positive
+//function to display time left as positive value or "0" when the score is negative
 function displayTimeLeft(timeLeft) {
-    if (timeLeft > 0) { timerDisplay.textContent = timeLeft; }
-    else {
-        timerDisplay.textContent = 0;
+    if (timeLeft > 0) {
+        timerDisplay.textContent = timeLeft;
     }
+    else {
+        timeLeft = 0;
+        timerDisplay.textContent = timeLeft;
+    }
+    return timeLeft;
 }
 
+//call function to initialize game
 init();
