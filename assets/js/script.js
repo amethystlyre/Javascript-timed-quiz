@@ -80,7 +80,6 @@ function startGame() {
     endQuiz.style.display = "none";
     timeLeft = 70;
     qcount = 0;
-    //gameScore=0;
     startTimer(timeLeft);
     renderQsAndAs(QAList, qcount);
     viewHighscores.removeEventListener("click", displayPastHighscore);
@@ -97,8 +96,6 @@ function renderQsAndAs(QAList, qcount) {
         userAnswer = answerUl.addEventListener("click", answerHandler);
     }
     else if (qcount = Object.keys(QAList).length) {
-        //gameScore=timeLeft;
-        //console.log(gameScore);
         clearInterval(timeInterval);
         endQuizResult();
 
@@ -116,12 +113,12 @@ function updateQuestion(question) {
 
 //Change the multiple choice options once user has answered
 function updateAnswers(answers) {
-    answerUl.innerHTML = '';
+    answerUl.innerHTML = "";
     for (let i = 0; i < (answers.length - 1); i++) {
         var answerOption = document.createElement("li");
         answerOption.textContent = `${i + 1}. ${answers[i]}`;
         answerOption.dataset.number = i;
-        answerOption.setAttribute('class', 'clickable');
+        answerOption.setAttribute("class", "clickable");
         answerUl.appendChild(answerOption);
     }
 }
@@ -145,7 +142,7 @@ function startTimer(timeGiven) {
             timerDisplay.textContent = 0;
             // Stops execution of action at set interval
             clearInterval(timeInterval);
-            // Calls function to create and append image
+            // Calls endQuiz function
             endQuizResult();
         }
     }, 1000);
@@ -229,7 +226,7 @@ function displayPastHighscore() {
     questionPage.style.display = "none";
     scorePage.style.display = "block";
     endQuiz.style.display = "none";
-    scoresList.innerHTML = '';
+    scoresList.innerHTML = "";
     pastHighScores = JSON.parse(localStorage.getItem("pastHighScores") ?? []);
 
     //display score in descending order
