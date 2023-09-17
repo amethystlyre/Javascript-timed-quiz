@@ -234,7 +234,7 @@ function displayPastHighscore() {
 
     for (let i = 0; i < pastHighScores.length; i++) {
         var pastScore = document.createElement("li");
-        pastScore.textContent = `${pastHighScores[i].initials} - ${pastHighScores[i].score}`
+        pastScore.textContent = `${i+1}. ${pastHighScores[i].initials} - ${pastHighScores[i].score}`
         scoresList.appendChild(pastScore);
     }
 
