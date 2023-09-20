@@ -1,13 +1,13 @@
 //initialize questions and answers as JS object
 
-let QAList = {
+var QAList = {
     "Inside the HTML document, where do you place your JavaScript code?":
         ["Inside the <link> element", "In the <footer> element", "Inside the <script> element", "Inside the <head> element", 2],
     "What operator is used to assign a value to a declared variable?":
         ["Question mark (?)", "Double-equal (==)", "Equal sign (=)", "Colon (:)", 2],
     "A very useful too used during development and debugging for printing content to the debugger is":
         ["Javascript", "Terminal/bash", "For loops", "Console.log", 3],
-    "From the given array which index is the letter 'b' on? ['a', 'b', 'c', 'd']":
+    "From the given array which index is the varter 'b' on? ['a', 'b', 'c', 'd']":
         ["1", "2", "3", "4", 0],
     "String values must be enclosed within _____ when being assigned to variables":
         ["Quotes", "Curly brackets", "Commas", "Parentheses", 0],
@@ -19,11 +19,11 @@ let QAList = {
         ["Numbers and strings", "Other arrays", "Booleans", "All of the above", 3]
 }
 //initialize global variables, default values and counters for later use.
-let correctAnswer;
-let userAnswer;
-let qcount;
-let timeLeft;
-let timeInterval;
+var correctAnswer;
+var userAnswer;
+var qcount;
+var timeLeft;
+var timeInterval;
 var listenerAdded = false;
 var pastHighScores = [];
 
@@ -95,7 +95,7 @@ function renderQsAndAs(QAList, qcount) {
         correctAnswer = Object.values(QAList)[qcount][4];
         userAnswer = answerUl.addEventListener("click", answerHandler);
     }
-    else if (qcount = Object.keys(QAList).length) {
+    else if (qcount === Object.keys(QAList).length) {
         clearInterval(timeInterval);
         endQuizResult();
 
@@ -115,7 +115,7 @@ function updateQuestion(question) {
 function updateAnswers(answers) {
     answerUl.innerHTML = "";
     for (let i = 0; i < (answers.length - 1); i++) {
-        var answerOption = document.createElement("li");
+        let answerOption = document.createElement("li");
         answerOption.textContent = `${i + 1}. ${answers[i]}`;
         answerOption.dataset.number = i;
         answerOption.setAttribute("class", "clickable");
@@ -154,9 +154,8 @@ function startTimer(timeGiven) {
 //Listens to which answer option the user selects on screen
 //Check if that is the correct answer and then render the next question on screen
 function answerHandler(event) {
-    var element = event.target;
-    if (element.matches("li")) {
-        userAnswer = element.dataset.number;
+    if (event.target.matches("li")) {
+        userAnswer = event.target.dataset.number;
         checkResult(userAnswer, correctAnswer);
         qcount++;
         renderQsAndAs(QAList, qcount);
@@ -197,28 +196,23 @@ function endQuizResult() {
 
     //check for listener added to avoid duplication - code from AskBCS Learning Assistant
     if (!listenerAdded) {
-        submitButton.addEventListener("click", function (event) {
-            event.preventDefault();
-            //check for past highscores saved in local storage
-            //Credits to Borislav Hadzhiev from https://bobbyhadz.com/blog/check-if-localstorage-key-exists-using-javascript
-            if (localStorage.hasOwnProperty('pastHighScores')) {
-                pastHighScores = JSON.parse(localStorage.getItem("pastHighScores"));
-            }
-
-            if (playerInit.value != null && playerInit.value != "") {
-                var currentScore = {
-                    initials: playerInit.value,
-                    score: displayTimeLeft(timeLeft)
-                }
-                pastHighScores.push(currentScore);
-                localStorage.setItem("pastHighScores", JSON.stringify(pastHighScores));
-            }
-
-            displayPastHighscore()
-        });
+        submitButton.addEventListener("click", submitButtonHandler);
         listenerAdded = true;
     }
 }
+
+//check for past highscores saved in local storage
+//Credits to Borislav Hadzhiev from https://bobbyhadz.com/blog/check-if-localstorage-key-exists-using-javascript
+function checkLocalPastScores() {
+    if (localStorage.hasOwnProperty('pastHighScores')) {
+        return pastHighScores = JSON.parse(localStorage.getItem("pastHighScores"));
+    }
+    else {
+        return pastHighScores = [];
+    }
+
+}
+
 
 //function to display high scores from past games sorted in descending order
 function displayPastHighscore() {
@@ -227,14 +221,14 @@ function displayPastHighscore() {
     scorePage.style.display = "block";
     endQuiz.style.display = "none";
     scoresList.innerHTML = "";
-    pastHighScores = JSON.parse(localStorage.getItem("pastHighScores") ?? []);
+    checkLocalPastScores();
 
     //display score in descending order
     pastHighScores.sort((a, b) => { return b.score - a.score });
 
     for (let i = 0; i < pastHighScores.length; i++) {
-        var pastScore = document.createElement("li");
-        pastScore.textContent = `${i+1}. ${pastHighScores[i].initials} - ${pastHighScores[i].score}`
+        let pastScore = document.createElement("li");
+        pastScore.textContent = `${i + 1}. ${pastHighScores[i].initials} - ${pastHighScores[i].score}`
         scoresList.appendChild(pastScore);
     }
 
@@ -259,6 +253,26 @@ function displayTimeLeft(timeLeft) {
     }
     return timeLeft;
 }
+
+//Handles the event of clicking on the submit button to save score to local storage
+function submitButtonHandler(event) {
+    event.preventDefault();
+
+    checkLocalPastScores();
+
+    if (playerInit.value != null && playerInit.value != "") {
+        let currentScore = {
+            initials: playerInit.value,
+            score: displayTimeLeft(timeLeft)
+        }
+        pastHighScores.push(currentScore);
+        localStorage.setItem("pastHighScores", JSON.stringify(pastHighScores));
+    }
+
+    displayPastHighscore()
+}
+
+
 
 //call function to initialize game
 init();
