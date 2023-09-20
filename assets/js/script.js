@@ -70,7 +70,6 @@ function init() {
 
     //Listen when the user wants to start game
     startGameButton.addEventListener("click", startGame);
-
 }
 
 //Once game starts
@@ -136,7 +135,6 @@ function startTimer(timeGiven) {
         if (timeLeft > 0) {
             timeLeft--;
             timerDisplay.textContent = displayTimeLeft(timeLeft);
-
         }
         else {
             timerDisplay.textContent = 0;
@@ -182,7 +180,6 @@ function checkResult(userAnswer, correctAnswer) {
         timeLeft -= 10;
         displayTimeLeft(timeLeft);
     }
-
 }
 
 //Page to save score after end of quiz
@@ -210,7 +207,6 @@ function checkLocalPastScores() {
     else {
         return pastHighScores = [];
     }
-
 }
 
 
@@ -231,7 +227,6 @@ function displayPastHighscore() {
         pastScore.textContent = `${i + 1}. ${pastHighScores[i].initials} - ${pastHighScores[i].score}`
         scoresList.appendChild(pastScore);
     }
-
 }
 
 //function to clear highscore data
@@ -239,7 +234,7 @@ function clearPastHighscore() {
     pastHighScores = [];
     localStorage.setItem("pastHighScores", JSON.stringify(pastHighScores));
     scoresList.innerHTML = '';
-    displayPastHighscore()
+    displayPastHighscore();
 }
 
 //function to display time left as positive value or "0" when the score is negative
@@ -269,7 +264,7 @@ function submitButtonHandler(event) {
         localStorage.setItem("pastHighScores", JSON.stringify(pastHighScores));
     }
 
-    displayPastHighscore()
+    displayPastHighscore();
 }
 
 
